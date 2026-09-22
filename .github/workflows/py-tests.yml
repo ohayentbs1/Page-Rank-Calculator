@@ -14,10 +14,10 @@ jobs:
     - name: Repository auschecken
       uses: actions/checkout@v4
 
-    - name: Python 3.11 einrichten
+    - name: Python 3.13 einrichten
       uses: actions/setup-python@v5
       with:
-        python-version: '3.11'
+        python-version: '3.13'
 
     - name: Unittests ausführen
       run: |
