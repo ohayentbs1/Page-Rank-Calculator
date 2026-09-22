@@ -60,6 +60,9 @@ class TestGraph(unittest.TestCase):
         expected_rank = 1.0 - self.graph._damping_factor
         self.assertAlmostEqual(self.p1.page_rank, expected_rank, places=5)
 
+    def test_calculate_page_rank_empty_graph(self):
+        self.assertEqual(self.graph.calculate_page_rank(), [])
+
     def test_calculate_page_rank_linear_chain(self):
         # seiten in richtiger reihenfolge?
         self.graph.add_page(self.p1)
