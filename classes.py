@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 class Page:
-    def __init__(self, outgoing_pages: Optional[List['Page']] = None, url: str = ""):
+    def __init__(self, url: str = "", outgoing_pages: Optional[List['Page']] = None):
         self.url: str = url
         self.outgoing_pages: List['Page'] = outgoing_pages if outgoing_pages is not None else []
         self.incoming_pages: List['Page'] = []
