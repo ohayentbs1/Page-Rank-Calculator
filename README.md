@@ -8,7 +8,7 @@
 Die Tests werden mit `unittest` ausgeführt:
 
 ```powershell
-python -m unittest -v tests
+python -m unittest -v classes
 ```
 
 ### Coverage nutzen
@@ -16,7 +16,7 @@ python -m unittest -v tests
 Um die Testabdeckung zu messen und zu bewerten, verwendet man `coverage.py`:
 
 ```powershell
-coverage run -m unittest -v tests
+coverage run -m unittest -v classes
 coverage report -m
 coverage html
 ```

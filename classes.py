@@ -1,3 +1,4 @@
+import unittest
 from typing import List, Optional
 
 class Page:
@@ -64,3 +65,27 @@ class Graph:
                 page.page_rank = new_ranks[page]
 
         return self.pages
+
+
+class TestExampleGraph(unittest.TestCase):
+    def test_page_ranks(self):
+        page_a = Page(url="https://example.com/a")
+        page_b = Page(url="https://example.com/b")
+        page_c = Page(url="https://example.com/c")
+
+        page_a.add_outgoing_page(page_b)
+        page_a.add_outgoing_page(page_c)
+        page_b.add_outgoing_page(page_a)
+        page_b.add_outgoing_page(page_c)
+
+        web_graph = Graph(damping_factor=0.85, max_iterations=15)
+        web_graph.add_page(page_a)
+        web_graph.add_page(page_b)
+        web_graph.add_page(page_c)
+
+        results = web_graph.calculate_page_rank()
+        page_ranks = {page.url: page.page_rank for page in results}
+
+        self.assertAlmostEqual(page_ranks["https://example.com/a"], 0.2609, places=4)
+        self.assertAlmostEqual(page_ranks["https://example.com/b"], 0.2609, places=4)
+        self.assertAlmostEqual(page_ranks["https://example.com/c"], 0.3717, places=4)
