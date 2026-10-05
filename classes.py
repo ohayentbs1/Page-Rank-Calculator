@@ -40,29 +40,29 @@ class Graph:
                 p.delete_outgoing_page(page)
 
     def calculate_page_rank(self) -> List[Page]:
-        num_pages = len(self.pages)
-        if num_pages == 0:
+        if len(self.pages) == 0:
             return self.pages
 
-        for page in self.pages:
-            page.page_rank = 1.0
+        for _ in range(self._max_iterations):
 
-        for i in range(self._max_iterations):
-            new_ranks = {}
+            for page in self.pages:
+                page.last_page_rank = page.page_rank
 
             for page in self.pages:
                 rank_sum = 0.0
 
                 for incoming_page in page.incoming_pages:
                     out_degree = len(incoming_page.outgoing_pages)
+
                     if out_degree > 0:
-                        rank_sum += incoming_page.page_rank / out_degree
+                        rank_sum += (
+                                incoming_page.last_page_rank / out_degree
+                        )
 
-                new_ranks[page] = (1.0 - self._damping_factor) + (self._damping_factor * rank_sum)
-
-            for page in self.pages:
-                page.last_page_rank = page.page_rank
-                page.page_rank = new_ranks[page]
+                page.page_rank = (
+                        (1.0 - self._damping_factor)
+                        + self._damping_factor * rank_sum
+                )
 
         return self.pages
 
