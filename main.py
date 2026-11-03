@@ -27,7 +27,7 @@ finally:
 
 pages = [
     Page(
-        id=page_id,
+        page_id=page_id,
         url=page_title.decode("utf-8") if isinstance(page_title, bytes) else page_title,
     )
     for page_id, page_title in page_rows
@@ -37,8 +37,8 @@ for page in pages:
     web_graph.add_page(page)
 
 for source_id, target_id in link_rows:
-    source_page = next((page for page in pages if page.id == source_id), None)
-    target_page = next((page for page in pages if page.id == target_id), None)
+    source_page = next((page for page in pages if page.page_id == source_id), None)
+    target_page = next((page for page in pages if page.page_id == target_id), None)
     if source_page is not None and target_page is not None:
         source_page.add_outgoing_page(target_page)
 
