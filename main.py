@@ -18,7 +18,19 @@ try:
         cursor.execute("SELECT page_id, page_title FROM page")
         page_rows = cursor.fetchall()
 
-        cursor.execute("SELECT pl_from, pl_target_id FROM pagelinks")
+        cursor.execute(
+            """
+            SELECT p_from.page_id, p_target.page_id
+            FROM pagelinks AS pl
+            JOIN page AS p_from
+                ON p_from.page_id = pl.pl_from
+            JOIN linktarget AS lt
+                ON lt.lt_id = pl.pl_target_id
+            JOIN page AS p_target
+                ON p_target.page_namespace = lt.lt_namespace
+                AND p_target.page_title = lt.lt_title
+            """
+        )
         link_rows = cursor.fetchall()
     finally:
         cursor.close()
@@ -33,12 +45,14 @@ pages = [
     for page_id, page_title in page_rows
 ]
 web_graph = Graph()
+pages_by_id = {}
 for page in pages:
     web_graph.add_page(page)
+    pages_by_id[page.page_id] = page
 
 for source_id, target_id in link_rows:
-    source_page = next((page for page in pages if page.page_id == source_id), None)
-    target_page = next((page for page in pages if page.page_id == target_id), None)
+    source_page = pages_by_id.get(source_id)
+    target_page = pages_by_id.get(target_id)
     if source_page is not None and target_page is not None:
         source_page.add_outgoing_page(target_page)
 
