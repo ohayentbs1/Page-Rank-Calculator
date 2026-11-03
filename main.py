@@ -1,7 +1,7 @@
-from classes import *
 import os
 import mysql.connector
 from dotenv import load_dotenv
+from classes import Graph, Page
 
 load_dotenv()
 
@@ -12,21 +12,35 @@ con = mysql.connector.connect(
     database=os.getenv("DB_NAME"),
 )
 
-con.close()
+try:
+    cursor = con.cursor()
+    try:
+        cursor.execute("SELECT page_id, page_title FROM page")
+        page_rows = cursor.fetchall()
 
-page_a = Page(url="https://example.com/a")
-page_b = Page(url="https://example.com/b")
-page_c = Page(url="https://example.com/c")
+        cursor.execute("SELECT pl_from, pl_target_id FROM pagelinks")
+        link_rows = cursor.fetchall()
+    finally:
+        cursor.close()
+finally:
+    con.close()
 
-page_a.add_outgoing_page(page_b)
-page_a.add_outgoing_page(page_c)
-page_b.add_outgoing_page(page_a)
-page_b.add_outgoing_page(page_c)
+pages = [
+    Page(
+        id=page_id,
+        url=page_title.decode("utf-8") if isinstance(page_title, bytes) else page_title,
+    )
+    for page_id, page_title in page_rows
+]
+web_graph = Graph()
+for page in pages:
+    web_graph.add_page(page)
 
-web_graph = Graph(damping_factor=0.85, max_iterations=15)
-web_graph.add_page(page_a)
-web_graph.add_page(page_b)
-web_graph.add_page(page_c)
+for source_id, target_id in link_rows:
+    source_page = next((page for page in pages if page.id == source_id), None)
+    target_page = next((page for page in pages if page.id == target_id), None)
+    if source_page is not None and target_page is not None:
+        source_page.add_outgoing_page(target_page)
 
 results = web_graph.calculate_page_rank()
 

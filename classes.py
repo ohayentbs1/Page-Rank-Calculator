@@ -2,7 +2,8 @@ import unittest
 from typing import List, Optional
 
 class Page:
-    def __init__(self, url: str = "", outgoing_pages: Optional[List['Page']] = None):
+    def __init__(self, url: str = "", outgoing_pages: Optional[List['Page']] = None, id: Optional[int] = None,):
+        self.id: Optional[int] = id
         self.url: str = url
         self.outgoing_pages: List['Page'] = outgoing_pages if outgoing_pages is not None else []
         self.incoming_pages: List['Page'] = []
