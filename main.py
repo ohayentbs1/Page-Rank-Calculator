@@ -29,6 +29,8 @@ try:
             JOIN page AS p_target
                 ON p_target.page_namespace = lt.lt_namespace
                 AND p_target.page_title = lt.lt_title
+            WHERE p_target.page_namespace = 0
+            AND p_from.page_namespace = 0
             """
         )
         link_rows = cursor.fetchall()
