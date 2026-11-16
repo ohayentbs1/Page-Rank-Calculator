@@ -7,8 +7,8 @@ class Page:
         self.url: str = url
         self.outgoing_pages: List['Page'] = outgoing_pages if outgoing_pages is not None else []
         self.incoming_pages: List['Page'] = []
-        self.page_rank: float = 0.0
-        self.last_page_rank: float = 0.0
+        self.page_rank: float = 1.0
+        self.last_page_rank: float = 1.0
 
     def add_outgoing_page(self, page: 'Page') -> None:
         if page not in self.outgoing_pages:
