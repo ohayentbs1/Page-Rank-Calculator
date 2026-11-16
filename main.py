@@ -61,4 +61,4 @@ results = graph.calculate_page_rank()
 
 print("Ergebnisse:")
 for page in sorted(results, key=lambda p: p.page_rank, reverse=True):
-    print(f"URL: {page.url:<22} | PageRank: {page.page_rank:.4f}")
+    print(f"URL: {page.url} | PageRank: {page.page_rank:.4f}")
