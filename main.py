@@ -42,23 +42,22 @@ finally:
 pages = [
     Page(
         page_id=page_id,
-        url=page_title.decode("utf-8") if isinstance(page_title, bytes) else page_title,
+        url=page_title.decode("utf-8"),
     )
     for page_id, page_title in page_rows
 ]
-web_graph = Graph()
-pages_by_id = {}
-for page in pages:
-    web_graph.add_page(page)
-    pages_by_id[page.page_id] = page
 
 for source_id, target_id in link_rows:
-    source_page = pages_by_id.get(source_id)
-    target_page = pages_by_id.get(target_id)
+    source_page = next((page for page in pages if page.page_id == source_id), None)
+    target_page = next((page for page in pages if page.page_id == target_id), None)
     if source_page is not None and target_page is not None:
         source_page.add_outgoing_page(target_page)
 
-results = web_graph.calculate_page_rank()
+graph = Graph()
+for page in pages:
+    graph.add_page(page)
+
+results = graph.calculate_page_rank()
 
 print("Ergebnisse:")
 for page in sorted(results, key=lambda p: p.page_rank, reverse=True):
